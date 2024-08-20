@@ -16,7 +16,10 @@ class MovieListView(APIView):
         return Response(serializer.data)
     
     def post(self, request):
-        serializer = MovieSerializer(data=request.data)
+        if isinstance(request.data, list):  # Check if the data is a list
+            serializer = MovieSerializer(data=request.data, many=True)
+        else:
+            serializer = MovieSerializer(data=request.data)
         
         if serializer.is_valid():
             serializer.save()
