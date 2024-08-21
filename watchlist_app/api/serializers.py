@@ -4,10 +4,14 @@ from watchlist_app.models import Movie
 
 ###### serializer.modelserializer #####
 class MovieSerializer(serializers.ModelSerializer):
+    # add aditional field in serializer
+    len_name = serializers.SerializerMethodField()
     class Meta:
         model = Movie
         fields = '__all__'
     
+    def get_len_name(self, obj):
+        return len(obj.name)
     def validate_name(self, value):
         if len(value) < 3:
             raise serializers.ValidationError('Movie name should be at least 3 characters long.')
