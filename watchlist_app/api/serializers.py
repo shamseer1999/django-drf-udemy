@@ -1,7 +1,16 @@
 from rest_framework import serializers
-from watchlist_app.models import Movie
+from watchlist_app.models import WatchList,StreamPlatform
 #######################################
 
+class WatchListSeralizer(serializers.ModelSerializer):
+    class Meta:
+        model = WatchList
+        fields = '__all__'
+
+class StreamPlatformSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = StreamPlatform
+        fields = '__all__'
 ###### serializer.modelserializer #####
 # class MovieSerializer(serializers.ModelSerializer):
 #     # add aditional field in serializer
