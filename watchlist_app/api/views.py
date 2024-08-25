@@ -2,11 +2,33 @@ from  rest_framework.response import Response
 from rest_framework import status
 from rest_framework.decorators import api_view
 from rest_framework.views import APIView
-from watchlist_app.models import WatchList,StreamPlatform
-from watchlist_app.api.serializers import WatchListSeralizer, StreamPlatformSerializer
+from rest_framework import mixins
+from rest_framework import generics
+from watchlist_app.models import WatchList,StreamPlatform,Riview
+from watchlist_app.api.serializers import WatchListSeralizer, StreamPlatformSerializer,ReviewSerializer
 #######################################
 
+class ReviewsList(mixins.ListModelMixin,mixins.CreateModelMixin,generics.GenericAPIView):
+    queryset = Riview.objects.all()
+    serializer_class = ReviewSerializer
+    
+    def get(self, request, *args, **kwargs):
+        return self.list(request,*args,**kwargs)
+    
+    def post(self, request, *args, **kwargs):
+        return self.create(request, *args, **kwargs)
+    
+class ReviewDetail(mixins.RetrieveModelMixin,mixins.UpdateModelMixin,mixins.DestroyModelMixin, generics.GenericAPIView):
+    queryset = Riview.objects.all()
+    serializer_class = ReviewSerializer
+    
+    def get(self, request, pk, *args, **kwargs):
+        return self.retrieve(request, *args, **kwargs)
+    def put(self, request, *args, **kwargs):
+        return self.update(request, *args, **kwargs)
 
+    def delete(self, request, *args, **kwargs):
+        return self.destroy(request, *args, **kwargs)
 class WatchListListView(APIView):
     def get(self, request):
         WatchLists = WatchList.objects.all()
@@ -72,18 +94,18 @@ class SreamPlatformView(APIView):
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 class SreamPlatformDetailView(APIView):
-    def get(self, request, platform_id):
+    def get(self, request, pk):
         try:
-            platform = StreamPlatform.objects.get(pk=platform_id)
+            platform = StreamPlatform.objects.get(pk=pk)
         except StreamPlatform.DoesNotExist:
             return Response({'Error':'Platform not found'}, status=status.HTTP_404_NOT_FOUND)
         
         serializer = StreamPlatformSerializer(platform)
         return Response(serializer.data)
     
-    def put(self, request, platform_id):
+    def put(self, request, pk):
         try:
-            platform = StreamPlatform.objects.get(pk=platform_id)
+            platform = StreamPlatform.objects.get(pk=pk)
         except StreamPlatform.DoesNotExist:
             return Response({'Error':'Platform not found'}, status=status.HTTP_404_NOT_FOUND)
         
