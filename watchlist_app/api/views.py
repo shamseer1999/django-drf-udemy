@@ -7,28 +7,34 @@ from rest_framework import generics
 from watchlist_app.models import WatchList,StreamPlatform,Riview
 from watchlist_app.api.serializers import WatchListSeralizer, StreamPlatformSerializer,ReviewSerializer
 #######################################
-
-class ReviewsList(mixins.ListModelMixin,mixins.CreateModelMixin,generics.GenericAPIView):
+class ReviewsList(generics.ListAPIView):
     queryset = Riview.objects.all()
     serializer_class = ReviewSerializer
-    
-    def get(self, request, *args, **kwargs):
-        return self.list(request,*args,**kwargs)
-    
-    def post(self, request, *args, **kwargs):
-        return self.create(request, *args, **kwargs)
-    
-class ReviewDetail(mixins.RetrieveModelMixin,mixins.UpdateModelMixin,mixins.DestroyModelMixin, generics.GenericAPIView):
+
+class ReviewDetail(generics.RetrieveUpdateDestroyAPIView):
     queryset = Riview.objects.all()
     serializer_class = ReviewSerializer
+# class ReviewsList(mixins.ListModelMixin,mixins.CreateModelMixin,generics.GenericAPIView):
+#     queryset = Riview.objects.all()
+#     serializer_class = ReviewSerializer
     
-    def get(self, request, pk, *args, **kwargs):
-        return self.retrieve(request, *args, **kwargs)
-    def put(self, request, *args, **kwargs):
-        return self.update(request, *args, **kwargs)
+#     def get(self, request, *args, **kwargs):
+#         return self.list(request,*args,**kwargs)
+    
+#     def post(self, request, *args, **kwargs):
+#         return self.create(request, *args, **kwargs)
+    
+# class ReviewDetail(mixins.RetrieveModelMixin,mixins.UpdateModelMixin,mixins.DestroyModelMixin, generics.GenericAPIView):
+#     queryset = Riview.objects.all()
+#     serializer_class = ReviewSerializer
+    
+#     def get(self, request, pk, *args, **kwargs):
+#         return self.retrieve(request, *args, **kwargs)
+#     def put(self, request, *args, **kwargs):
+#         return self.update(request, *args, **kwargs)
 
-    def delete(self, request, *args, **kwargs):
-        return self.destroy(request, *args, **kwargs)
+#     def delete(self, request, *args, **kwargs):
+#         return self.destroy(request, *args, **kwargs)
 class WatchListListView(APIView):
     def get(self, request):
         WatchLists = WatchList.objects.all()
