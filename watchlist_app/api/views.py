@@ -7,9 +7,20 @@ from rest_framework import generics
 from watchlist_app.models import WatchList,StreamPlatform,Riview
 from watchlist_app.api.serializers import WatchListSeralizer, StreamPlatformSerializer,ReviewSerializer
 #######################################
-class ReviewsList(generics.ListAPIView):
-    queryset = Riview.objects.all()
+
+class ReviewCreate(generics.CreateAPIView):
     serializer_class = ReviewSerializer
+    
+    def perform_create(self, serializer):
+        watchlist = WatchList.objects.get(pk=self.kwargs['pk'])
+        serializer.save(watchlist=watchlist)
+class ReviewsList(generics.ListAPIView):
+    # queryset = Riview.objects.all()
+    serializer_class = ReviewSerializer
+    
+    def get_queryset(self):
+        pk = self.kwargs.get('pk')
+        return Riview.objects.filter(watchlist=pk)
 
 class ReviewDetail(generics.RetrieveUpdateDestroyAPIView):
     queryset = Riview.objects.all()
@@ -58,11 +69,11 @@ class WatchListListView(APIView):
 class WatchListListDetailView(APIView):
     def get(self, request,watchlist_id):
         try:
-            WatchList = WatchList.objects.get(pk=watchlist_id)
-        except WatchList.DoesNotExist:
+            WatchListData = WatchList.objects.get(pk=watchlist_id)
+        except WatchListData.DoesNotExist:
             return Response({'Error':'Movie not found'}, status=status.HTTP_404_NOT_FOUND)
         
-        serializer = WatchListSeralizer(WatchList)
+        serializer = WatchListSeralizer(WatchListData)
         return Response(serializer.data)
     
     def put(self, request, watchlist_id):
