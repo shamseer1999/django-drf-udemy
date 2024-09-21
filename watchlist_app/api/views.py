@@ -19,12 +19,19 @@ class ReviewCreate(generics.CreateAPIView):
     
     def perform_create(self, serializer):
         watchlist = WatchList.objects.get(pk=self.kwargs['pk'])
-        
         review_user=self.request.user
         review_queryset = Riview.objects.filter(watchlist=watchlist, review_user=review_user)
         
         if review_queryset.exists():
             raise ValidationError('This user reviewed already')
+        
+        if watchlist.number_rating == 0:
+            watchlist.avg_rating = serializer.validated_data['rating']
+        else:
+            watchlist.avg_rating = (watchlist.avg_rating + serializer.validated_data['rating']) / 2
+        
+        watchlist.number_rating += 1
+        watchlist.save()
         
         serializer.save(watchlist=watchlist, review_user=review_user)
 class ReviewsList(generics.ListAPIView):
