@@ -25,3 +25,10 @@ def register_user(request):
         else:
             data = serializer.errors
             return Response(data, status=status.HTTP_400_BAD_REQUEST)
+        
+@api_view(['POST'])
+def logout_user(request):
+    
+    if request.method == 'POST':
+        request.user.auth_token.delete()
+        return  Response({'message': 'You have been logged out','status':status.HTTP_200_OK})
