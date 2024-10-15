@@ -10,16 +10,20 @@ from rest_framework.exceptions import ValidationError
 from rest_framework.permissions import IsAuthenticatedOrReadOnly,IsAuthenticated
 from watchlist_app.api.permissions import IsReviewOwnerOrReadOnly
 from django.contrib.auth.models import User
+from django_filters.rest_framework import DjangoFilterBackend
 #######################################
 
 class UsersList(generics.ListAPIView):
+    queryset = User.objects.all()
     serializer_class = UserSerializer
-    def get_queryset(self):
-        queryset = User.objects.all()
-        username = self.request.query_params.get('username')
-        if username is not None:
-            return queryset.filter(username=username)
-        return queryset
+    filter_backends = [DjangoFilterBackend]
+    filterset_fields = ['username','email']
+    # def get_queryset(self):
+    #     queryset = User.objects.all()
+    #     username = self.request.query_params.get('username')
+    #     if username is not None:
+    #         return queryset.filter(username=username)
+    #     return queryset
 class ReviewCreate(generics.CreateAPIView):
     serializer_class = ReviewSerializer
     
