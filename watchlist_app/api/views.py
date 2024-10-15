@@ -5,12 +5,21 @@ from rest_framework.views import APIView
 from rest_framework import mixins
 from rest_framework import generics
 from watchlist_app.models import WatchList,StreamPlatform,Riview
-from watchlist_app.api.serializers import WatchListSeralizer, StreamPlatformSerializer,ReviewSerializer
+from watchlist_app.api.serializers import WatchListSeralizer, StreamPlatformSerializer,ReviewSerializer,UserSerializer
 from rest_framework.exceptions import ValidationError
 from rest_framework.permissions import IsAuthenticatedOrReadOnly,IsAuthenticated
 from watchlist_app.api.permissions import IsReviewOwnerOrReadOnly
+from django.contrib.auth.models import User
 #######################################
 
+class UsersList(generics.ListAPIView):
+    serializer_class = UserSerializer
+    def get_queryset(self):
+        queryset = User.objects.all()
+        username = self.request.query_params.get('username')
+        if username is not None:
+            return queryset.filter(username=username)
+        return queryset
 class ReviewCreate(generics.CreateAPIView):
     serializer_class = ReviewSerializer
     

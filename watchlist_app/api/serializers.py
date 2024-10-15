@@ -1,7 +1,12 @@
 from rest_framework import serializers
 from watchlist_app.models import WatchList,StreamPlatform,Riview
+from django.contrib.auth.models import User
 #######################################
 
+class UserSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = User
+        fields = ('id', 'username', 'email')
 class ReviewSerializer(serializers.ModelSerializer):
     review_user = serializers.StringRelatedField(read_only=True)
     class Meta:
