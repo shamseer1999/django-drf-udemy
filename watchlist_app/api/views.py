@@ -11,13 +11,18 @@ from rest_framework.permissions import IsAuthenticatedOrReadOnly,IsAuthenticated
 from watchlist_app.api.permissions import IsReviewOwnerOrReadOnly
 from django.contrib.auth.models import User
 from django_filters.rest_framework import DjangoFilterBackend
+from rest_framework.filters import SearchFilter
+from watchlist_app.api.pagination import watchListPagination
+
 #######################################
 
 class UsersList(generics.ListAPIView):
     queryset = User.objects.all()
     serializer_class = UserSerializer
-    filter_backends = [DjangoFilterBackend]
-    filterset_fields = ['username','email']
+    filter_backends = [SearchFilter]
+    search_fields = ['username']
+    pagination_class = watchListPagination
+    # page_size = 2
     # def get_queryset(self):
     #     queryset = User.objects.all()
     #     username = self.request.query_params.get('username')
